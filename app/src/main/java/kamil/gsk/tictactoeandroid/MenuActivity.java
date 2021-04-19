@@ -9,21 +9,29 @@ import android.view.View;
 public class MenuActivity extends AppCompatActivity {
 
     private boolean isPvP;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_menu);
     }
+
     public void playerVsPlayer(View view) {
         isPvP = true;
         Intent intent = new Intent(this, GameActivity.class);
-        intent.putExtra("PVP",isPvP);
+        intent.putExtra("PVP", isPvP);
         startActivity(intent);
     }
+
     public void playerVsComputer(View view) {
         isPvP = false;
         Intent intent = new Intent(this, GameActivity.class);
         intent.putExtra("PVP", isPvP);
+        startActivity(intent);
+    }
+
+    public void changeSettings(View view) {
+        Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
     }
 }

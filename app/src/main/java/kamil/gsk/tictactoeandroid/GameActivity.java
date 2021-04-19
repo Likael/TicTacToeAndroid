@@ -8,7 +8,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-
+import androidx.appcompat.app.AppCompatDelegate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -36,8 +36,8 @@ public class GameActivity extends AppCompatActivity {
         populateHashMap();
         if (savedInstanceState == null) {
 
-            Intent intencja = getIntent();
-            isPvP = intencja.getBooleanExtra("PVP", false);
+            Intent intent = getIntent();
+            isPvP = intent.getBooleanExtra("PVP", false);
         }
     }
 
@@ -46,14 +46,15 @@ public class GameActivity extends AppCompatActivity {
             resetBoard();
             return;
         }
-        Button przycisk = (Button) view;
-        String nazwaPrzycisku = view.getResources().getResourceEntryName(view.getId());
-        if (!przycisk.getText().equals(""))
+
+        Button button = (Button) view;
+        String buttonName = view.getResources().getResourceEntryName(view.getId());
+        if (!button.getText().equals(""))
             return;
-        int number = Integer.parseInt(nazwaPrzycisku.substring(nazwaPrzycisku.length() - 1));
+        int number = Integer.parseInt(buttonName.substring(buttonName.length() - 1));
         board[number] = turn;
-        pieces.add(przycisk);
-        przycisk.setText(turn);
+        pieces.add(button);
+        button.setText(turn);
         changeTurn();
         if (!checkWinner().equals(" "))
             if (checkWinner().equals("T"))
@@ -74,7 +75,7 @@ public class GameActivity extends AppCompatActivity {
         for (int i = 0; i < 9; i++) {
             if (board[i].equals(" ")) {
                 board[i] = turn;
-                score = minimax(board, 0, false);
+                score = minmax(board, 0, false);
                 board[i] = " ";
                 if (score > bestScore) {
                     bestScore = score;
@@ -96,7 +97,7 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void populateHashMap() {
-        if(turn.equals("X")) {
+        if (turn.equals("X")) {
             scores.put("X", -10);
             scores.put("O", 10);
             scores.put("T", 0);
@@ -107,7 +108,7 @@ public class GameActivity extends AppCompatActivity {
         }
     }
 
-    private int minimax(String[] board, int depth, boolean isMaximizing) {
+    private int minmax(String[] board, int depth, boolean isMaximizing) {
 
         String win = checkWinner();
         if (!win.equals(" ")) {
@@ -121,7 +122,7 @@ public class GameActivity extends AppCompatActivity {
             for (int i = 0; i < 9; i++) {
                 if (board[i].equals(" ")) {
                     board[i] = turn;
-                    score = minimax(board, depth + 1, false);
+                    score = minmax(board, depth + 1, false);
                     bestScore = Math.max(score, bestScore);
                     board[i] = " ";
                 }
@@ -135,7 +136,7 @@ public class GameActivity extends AppCompatActivity {
                     changeTurn();
                     board[i] = turn;
                     changeTurn();
-                    score = minimax(board, depth + 1, true);
+                    score = minmax(board, depth + 1, true);
                     bestScore = Math.min(score, bestScore);
                     board[i] = " ";
                 }
@@ -153,8 +154,8 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void resetBoard() {
-        for (Button przycisk : pieces) {
-            przycisk.setText("");
+        for (Button button : pieces) {
+            button.setText("");
         }
         pieces.clear();
         end = false;
@@ -215,13 +216,13 @@ public class GameActivity extends AppCompatActivity {
     }
 
     private void announceTie() {
-        Toast.makeText(this, "Remis", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "Tie", Toast.LENGTH_LONG).show();
         winner = " ";
         end = true;
     }
 
     private void announceWinner() {
-        Toast.makeText(this, "Wygrały " + winner, Toast.LENGTH_LONG).show();
+        Toast.makeText(this, winner + " Won", Toast.LENGTH_LONG).show();
         winner = " ";
         end = true;
     }
